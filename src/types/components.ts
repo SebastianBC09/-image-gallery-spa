@@ -11,7 +11,7 @@ interface Link {
 
 export interface Image {
   type?: string;
-  id?: number;
+  id: number;
   title: string;
   price: number
   author: string;
