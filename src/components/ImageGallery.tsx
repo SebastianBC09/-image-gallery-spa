@@ -29,15 +29,11 @@ const ImageGallery = () => {
   console.log(images);
 
   return (
-    <div className="ImageGallery">
+    <div className="container flex flex-row flex-wrap justify-center gap-[20px]">
       {loading && <p>Loading...</p>}
-      {images?.map(({title, price, author, main_attachment}, i) => {
-        return (
-          <div key={i}>
-            <ImageCard title={title} price={price} author={author} main_attachment={main_attachment} />
-          </div>
-        )
-      })}
+      {images?.map(({title, price, author, main_attachment}, i) => (
+        <ImageCard key={i} title={title} price={price} author={author} main_attachment={main_attachment} />
+      ))}
     </div>
   )
 }
