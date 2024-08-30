@@ -3,10 +3,14 @@ import { Image } from '../types/components.ts'
 
 const API_URL = 'http://localhost:3100';
 
-export const getAllImages = async (search = ''): Promise<Image[]> => {
+export const getAllImages = async (): Promise<Image[]> => {
   try {
     const response = await axios.get<Image[]>(`${API_URL}/images`, {
-      params: { search}
+      headers: {
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
     });
     return response.data;
   } catch (error) {
