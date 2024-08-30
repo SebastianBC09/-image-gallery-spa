@@ -1,5 +1,11 @@
+import React from 'react'
+
 export interface Searchbar {
   onSearch: (query: string) => void;
+}
+
+export interface ImageGallery {
+  children: (image: Image, ref: React.Ref<HTMLDivElement> | null) => React.ReactNode;
 }
 
 export interface Image {
