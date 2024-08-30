@@ -1,13 +1,10 @@
 import React from 'react'
+import ImageCard from './ImageCard.tsx'
 import { getAllImages } from '../services/api.ts';
 import { Image } from '../types/components.ts'
-import ImageCard from './ImageCard.tsx'
 
 const ImageGallery = () => {
   const [images, setImages] = React.useState<Image[]>();
-  // const [page, setPage] = React.useState(1);
-  // const [search, setSearch] = React.useState('');
-
   const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
@@ -22,18 +19,28 @@ const ImageGallery = () => {
         setLoading(false);
       }
     };
-
     fetchImages().catch(console.error);
   }, []);
 
-  console.log(images);
+  const imageCards = React.useMemo(() => {
+    return images?.map(({ id, title, price, author, main_attachment, likes_count, liked }, i) => (
+      <ImageCard
+        key={i}
+        id={id}
+        title={title}
+        price={price}
+        author={author}
+        main_attachment={main_attachment}
+        likes_count={likes_count}
+        liked={liked}
+      />
+    ));
+  }, [images]);
 
   return (
     <div className="container flex flex-row flex-wrap justify-center gap-[20px]">
+      {imageCards}
       {loading && <p>Loading...</p>}
-      {images?.map(({title, price, author, main_attachment}, i) => (
-        <ImageCard key={i} title={title} price={price} author={author} main_attachment={main_attachment} />
-      ))}
     </div>
   )
 }
