@@ -58,7 +58,7 @@ const ImageGallery = () => {
   }, [page, allImages, hasMore]);
 
   return (
-    <div className="container flex flex-row flex-wrap justify-center gap-[20px]">
+    <div className="flex flex-row flex-wrap justify-center gap-[20px]">
       {displayedImages.map((image, index) => (
         <div key={image.id} ref={index === displayedImages.length - 1 ? lastImageElementRef : null}>
           <ImageCard {...image} />
