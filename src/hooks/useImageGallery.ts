@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { getAllImages } from '../services/api.ts';
-import { Image } from '../types/components.ts';
+import { Image, UseImageGallery } from '../types/components.ts'
 
 const IMAGES_PER_PAGE = 5;
 
-const useImageGallery = (searchQuery: string) => {
+const useImageGallery: UseImageGallery = (searchQuery: string) => {
   const [allImages, setAllImages] = useState<Image[]>([]);
   const [displayedImages, setDisplayedImages] = useState<Image[]>([]);
   const [loading, setLoading] = useState(false);
