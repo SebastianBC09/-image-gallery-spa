@@ -12,6 +12,8 @@ const useImageGallery = (searchQuery: string) => {
   const [hasMore, setHasMore] = useState(true);
   const observer = useRef<IntersectionObserver | null>(null);
 
+  // Callback ref for the last image element
+  // This is used to detect when the last image is visible and load more images
   const lastImageElementRef = useCallback(
     (node: HTMLDivElement | null) => {
       if (loading) return;
@@ -26,14 +28,13 @@ const useImageGallery = (searchQuery: string) => {
     [loading, hasMore]
   );
 
+  // Effect to fetch all images from the API when the component mounts
   useEffect(() => {
     const fetchImages = async () => {
       setLoading(true);
       try {
         const images = await getAllImages();
         setAllImages(images);
-        setDisplayedImages(images.slice(0, IMAGES_PER_PAGE));
-        setHasMore(images.length > IMAGES_PER_PAGE);
       } catch (error) {
         console.error(error);
       } finally {
@@ -43,22 +44,29 @@ const useImageGallery = (searchQuery: string) => {
     fetchImages();
   }, []);
 
+  // Effect to reset page and displayed images when the search query changes
   useEffect(() => {
-    const filteredImages = allImages.filter((image) => image.title.toLowerCase().includes(searchQuery.toLowerCase()));
+    setPage(1);
+    setDisplayedImages([]);
+  }, [searchQuery]);
 
+  // Effect to update displayed images when page or search query changes
+  useEffect(() => {
+    const filteredImages = allImages.filter((image) =>
+      image.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
     const start = (page - 1) * IMAGES_PER_PAGE;
     const end = page * IMAGES_PER_PAGE;
-    const newImages = filteredImages.slice(start, end);
+    let newImages = filteredImages.slice(start % filteredImages.length, end % filteredImages.length);
 
-    if (page === 1) {
-      setDisplayedImages(newImages);
-    } else {
-      setDisplayedImages((prevImages) => [...prevImages, ...newImages]);
+    if (newImages.length === 0 && filteredImages.length > 0) {
+      const remainingCount = IMAGES_PER_PAGE - newImages.length;
+      const repeatedImages = filteredImages.slice(0, remainingCount);
+      newImages = [...newImages, ...repeatedImages];
     }
+    setDisplayedImages(prevImages => [...prevImages, ...newImages]);
+    setHasMore(filteredImages.length > 0);
 
-    setHasMore(newImages.length === IMAGES_PER_PAGE);
-
-    // Update URL with search and page parameters
     const params = new URLSearchParams(window.location.search);
     if (searchQuery) {
       params.set('search', searchQuery);
