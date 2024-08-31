@@ -9,6 +9,16 @@ export interface ImageGallery {
   searchQuery: string;
 }
 
+export interface UseImageGallery {
+  (searchQuery: string): UseImageGalleryReturn;
+}
+
+interface UseImageGalleryReturn {
+  displayedImages: Image[];
+  loading: boolean;
+  lastImageElementRef: (node: HTMLDivElement | null) => void;
+}
+
 export interface Image {
   type?: string;
   id: number;
