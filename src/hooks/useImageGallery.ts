@@ -4,7 +4,7 @@ import { Image } from '../types/components.ts';
 
 const IMAGES_PER_PAGE = 5;
 
-const useImageGallery = () => {
+const useImageGallery = (searchQuery: string) => {
   const [allImages, setAllImages] = useState<Image[]>([]);
   const [displayedImages, setDisplayedImages] = useState<Image[]>([]);
   const [loading, setLoading] = useState(false);
@@ -44,20 +44,30 @@ const useImageGallery = () => {
   }, []);
 
   useEffect(() => {
-    if (page > 1) {
-      const start = (page - 1) * IMAGES_PER_PAGE;
-      const end = page * IMAGES_PER_PAGE;
-      let newImages = allImages.slice(start, end);
+    const filteredImages = allImages.filter((image) => image.title.toLowerCase().includes(searchQuery.toLowerCase()));
 
-      if (newImages.length === 0 && hasMore) {
-        const repeatedImages = allImages.slice(0, IMAGES_PER_PAGE);
-        newImages = repeatedImages.slice(0, end - start);
-      }
+    const start = (page - 1) * IMAGES_PER_PAGE;
+    const end = page * IMAGES_PER_PAGE;
+    const newImages = filteredImages.slice(start, end);
 
+    if (page === 1) {
+      setDisplayedImages(newImages);
+    } else {
       setDisplayedImages((prevImages) => [...prevImages, ...newImages]);
-      setHasMore(newImages.length > 0);
     }
-  }, [page, allImages, hasMore]);
+
+    setHasMore(newImages.length === IMAGES_PER_PAGE);
+
+    // Update URL with search and page parameters
+    const params = new URLSearchParams(window.location.search);
+    if (searchQuery) {
+      params.set('search', searchQuery);
+    } else {
+      params.delete('search');
+    }
+    params.set('page', page.toString());
+    window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
+  }, [page, searchQuery, allImages]);
 
   return {
     displayedImages,
