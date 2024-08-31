@@ -6,6 +6,7 @@ export interface Searchbar {
 
 export interface ImageGallery {
   children: (image: Image, ref: React.Ref<HTMLDivElement> | null) => React.ReactNode;
+  searchQuery: string;
 }
 
 export interface Image {
@@ -16,8 +17,8 @@ export interface Image {
   author: string;
   created_at?: string;
   main_attachment: MainAttachment;
-  likes_count?: number;
-  liked?: boolean;
+  likes_count: number;
+  liked: boolean;
   links?: Link[];
 }
 
