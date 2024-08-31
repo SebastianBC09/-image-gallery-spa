@@ -5,13 +5,16 @@ import ImageGallery from '../components/ImageGallery';
 import { Image } from '../types/components.ts';
 
 const HomePage: React.FC = () => {
-  const onSearch = () => {
-    console.log('onSearch');
-  }
+  const [searchQuery, setSearchQuery] = React.useState('');
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    console.log('Search Query:', query);
+  };
   return (
     <>
-      <SearchBar onSearch={onSearch}/>
-      <ImageGallery>
+      <SearchBar onSearch={handleSearch}/>
+      <ImageGallery searchQuery={searchQuery}>
         {(image: Image) => (
           <ImageCard {...image} />
         )}
