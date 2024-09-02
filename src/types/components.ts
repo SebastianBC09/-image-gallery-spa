@@ -1,4 +1,5 @@
 import React from 'react'
+import { DebouncedFunc } from 'lodash'
 
 export interface Searchbar {
   onSearch: (query: string) => void;
@@ -11,6 +12,10 @@ export interface ImageGallery {
 
 export interface UseImageGallery {
   (searchQuery: string): UseImageGalleryReturn;
+}
+
+export interface DebouncedPushState {
+  (delay?: number): DebouncedFunc<(searchQuery: string, page: number) => void>;
 }
 
 interface UseImageGalleryReturn {
