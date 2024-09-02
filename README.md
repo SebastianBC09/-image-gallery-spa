@@ -37,7 +37,6 @@ When you're ready to deploy the application, run the build command. This will co
 - **TypeScript**: For type safety.
 - **Tailwind CSS**: For utility-first styling.
 - **Axios**: For making API requests.
-- **React Query**: For data fetching and caching.
 
 # React + TypeScript + Vite
 
