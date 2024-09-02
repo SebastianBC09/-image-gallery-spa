@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { getAllImages } from '../services/api.ts';
+import { createDebouncedPushState } from '../utils/debouncePushState.ts'
 import { Image, UseImageGallery } from '../types/components.ts'
 
 const IMAGES_PER_PAGE = 5;
@@ -11,6 +12,8 @@ const useImageGallery: UseImageGallery = (searchQuery: string) => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const observer = useRef<IntersectionObserver | null>(null);
+
+  const debouncedPushState = useRef(createDebouncedPushState()).current;
 
   // Callback ref for the last image element
   // This is used to detect when the last image is visible and load more images
@@ -66,15 +69,8 @@ const useImageGallery: UseImageGallery = (searchQuery: string) => {
     }
     setDisplayedImages(prevImages => [...prevImages, ...newImages]);
     setHasMore(filteredImages.length > 0);
-
-    const params = new URLSearchParams(window.location.search);
-    if (searchQuery) {
-      params.set('search', searchQuery);
-    } else {
-      params.delete('search');
-    }
-    params.set('page', page.toString());
-    window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
+    
+    debouncedPushState(searchQuery, page);
   }, [page, searchQuery, allImages]);
 
   return {
